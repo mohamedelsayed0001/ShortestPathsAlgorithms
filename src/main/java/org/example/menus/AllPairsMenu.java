@@ -45,47 +45,20 @@ public class AllPairsMenu implements Menu {
                 return;
         }
 
-        boolean backToMain = false;
-
         strategy.execute();
         if(!strategy.isSuccessful()) {
-            backToMain = true;
+            return;
         }
 
-        while (!backToMain) {
-            System.out.println("\n--- All Pairs Shortest Path Results ---");
-            System.out.println("1. Get cost of path between two nodes");
-            System.out.println("2. Get path between two nodes");
-            System.out.println("3. Return to main menu");
-            System.out.print("Enter your choice: ");
+        int src;
+        int dest;
 
-            int subChoice = getIntInput();
-            int src;
-            int dest;
+        System.out.print("Enter source node: "); src = getIntInput();
+        System.out.print("Enter destination node: "); dest = getIntInput();
 
-            switch (subChoice) {
-                case 1:
-                    System.out.print("Enter source node: "); src = getIntInput();
-                    System.out.print("Enter destination node: "); dest = getIntInput();
-
-                    if (src >= 0 && src < vertices && dest >= 0 && dest < vertices) {
-                        System.out.println("Path cost from " + src + " to " + dest + ": " + strategy.getCost(src, dest));
-                    } else System.out.println("Invalid source or destination node.");
-                    break;
-                case 2:
-                    System.out.print("Enter source node: "); src = getIntInput();
-                    System.out.print("Enter destination node: "); dest = getIntInput();
-
-                    if (src >= 0 && src < vertices && dest >= 0 && dest < vertices) {
-                        System.out.println("Path from " + src + " to " + dest + ": " + strategy.getPath(src, dest));
-                    } else System.out.println("Invalid source or destination node.");
-                    break;
-                case 3:
-                    backToMain = true;
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
-        }
+        if (src >= 0 && src < vertices && dest >= 0 && dest < vertices) {
+            System.out.println("Path from " + src + " to " + dest + ": " + strategy.getPath(src, dest)
+                    + ", cost = " + strategy.getCost(src, dest));
+        } else System.out.println("Invalid source or destination node.");
     }
 }

@@ -33,7 +33,7 @@ public class Dijkstra implements Algorithm {
         for (int i = 0; i < vertices; i++) {
             for (int[] edge : graph[i]) {
                 if (edge[1] < 0) {
-                    System.out.println("Warning: Dijkstra's algorithm does not support negative weights!");
+                    System.out.println("Dijkstra's algorithm does not support negative weights!");
                     success = false;
                     return;
                 }

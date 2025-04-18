@@ -16,7 +16,8 @@ public class GraphCLI {
         String filePath = scanner.nextLine();
         GraphParser parser = new GraphParser();
         try {
-            graph = parser.parseGraph(filePath);
+//            graph = parser.parseGraph(filePath);
+            graph = parser.parseGraph("src/main/java/org/example/graph.txt");
             parser.printGraph(graph);
             vertices = graph.length;
             mainMenu();
