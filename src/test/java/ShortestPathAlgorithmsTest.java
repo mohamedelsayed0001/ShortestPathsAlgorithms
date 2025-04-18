@@ -1,5 +1,5 @@
-package org.example.algorithims;
 
+import org.example.algorithims.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,98 +30,76 @@ public class ShortestPathAlgorithmsTest {
 
     private final int vertices = 4;
 
-    // Cost matrix & parent matrix helpers
-    private int[][] initCostMatrix(int n) {
-        int[][] cost = new int[n][n];
-        for (int[] row : cost) Arrays.fill(row, Integer.MAX_VALUE);
-        return cost;
-    }
-
-    private int[][] initParentMatrix(int n) {
-        int[][] parent = new int[n][n];
-        for (int[] row : parent) Arrays.fill(row, -1);
-        return parent;
-    }
 
     @Test
     public void testDijkstraCorrectness() {
         ArrayList<int[]>[] graph = createGraph(vertices, smallGraphEdges);
-        int[] cost = new int[vertices];
-        int[] parent = new int[vertices];
-        Dijkstra dijkstra = new Dijkstra(graph, 0, cost, parent);
+        Dijkstra dijkstra = new Dijkstra(graph, 0);
         dijkstra.execute();
 
-        assertEquals("4", dijkstra.getCost(3));
-        assertEquals("0 -> 2 -> 1 -> 3", dijkstra.getPath(3));
+        assertEquals("4", dijkstra.getCost(0, 3));
+        assertEquals("[0, 2, 1, 3]", dijkstra.getPath(0, 3));
     }
 
     @Test
     public void testBellmanFordCorrectness() {
         ArrayList<int[]>[] graph = createGraph(vertices, smallGraphEdges);
-        int[] cost = new int[vertices];
-        int[] parent = new int[vertices];
-        BellmanFord bf = new BellmanFord(graph, 0, cost, parent);
+        BellmanFord bf = new BellmanFord(graph, 0);
         bf.execute();
 
-        assertEquals("4", bf.getCost(3));
-        assertEquals("[0, 2, 1, 3]", bf.getPath(3));
+        assertEquals("4", bf.getCost(0, 3));
+        assertEquals("[0, 2, 1, 3]", bf.getPath(0, 3));
     }
 
     @Test
     public void testFloydWarshallCorrectness() {
         ArrayList<int[]>[] graph = createGraph(vertices, smallGraphEdges);
-        FloydWarshall fw = new FloydWarshall(graph, 0, initCostMatrix(vertices), initParentMatrix(vertices));
+        FloydWarshall fw = new FloydWarshall(graph);
         fw.execute();
 
         assertTrue(fw.isSuccessful());
-        assertEquals("4", fw.getCost(3));
-        assertEquals("[0, 2, 1, 3]", fw.getPath(3));
+        assertEquals("4", fw.getCost(0, 3));
+        assertEquals("[0, 2, 1, 3]", fw.getPath(0, 3));
     }
 
     @Test
     public void testDijkstraNegativeEdgeWarning() {
         ArrayList<int[]>[] graph = createGraph(vertices, negativeGraphEdges);
-        int[] cost = new int[vertices];
-        int[] parent = new int[vertices];
-        Dijkstra dijkstra = new Dijkstra(graph, 0, cost, parent);
+        Dijkstra dijkstra = new Dijkstra(graph, 0);
         dijkstra.execute();
 
-        assertEquals("0", dijkstra.getCost(3));
+        assertEquals("0", dijkstra.getCost(0, 3));
     }
 
     @Test
     public void testBellmanFordNegativeEdge() {
         ArrayList<int[]>[] graph = createGraph(vertices, negativeGraphEdges);
-        int[] cost = new int[vertices];
-        int[] parent = new int[vertices];
-        BellmanFord bf = new BellmanFord(graph, 0, cost, parent);
+        BellmanFord bf = new BellmanFord(graph, 0);
         bf.execute();
 
-        assertEquals("0", bf.getCost(3));
-        assertEquals("[0, 2, 1, 3]", bf.getPath(3));
+        assertEquals("0", bf.getCost(0, 3));
+        assertEquals("[0, 2, 1, 3]", bf.getPath(0, 3));
     }
 
     @Test
     public void testFloydWarshallNegativeEdge() {
         ArrayList<int[]>[] graph = createGraph(vertices, negativeGraphEdges);
-        FloydWarshall fw = new FloydWarshall(graph, 0, initCostMatrix(vertices), initParentMatrix(vertices));
+        FloydWarshall fw = new FloydWarshall(graph);
         fw.execute();
 
         assertTrue(fw.isSuccessful());
-        assertEquals("0", fw.getCost(3));
+        assertEquals("0", fw.getCost(0, 3));
     }
 
     @Test
     public void testUnreachableNodes() {
         ArrayList<int[]>[] graph = createGraph(4, unreachableGraphEdges);
-        int[] cost = new int[4];
-        int[] parent = new int[4];
 
-        BellmanFord bf = new BellmanFord(graph, 0, cost, parent);
+        BellmanFord bf = new BellmanFord(graph, 0);
         bf.execute();
 
-        assertEquals("∞", bf.getCost(3));
-        assertEquals("No path", bf.getPath(3));
+        assertEquals("∞", bf.getCost(0, 3));
+        assertEquals("No path", bf.getPath(0, 3));
     }
 
     @Test
@@ -130,7 +108,7 @@ public class ShortestPathAlgorithmsTest {
             {0, 1, 1}, {1, 2, -1}, {2, 0, -1}
         };
         ArrayList<int[]>[] graph = createGraph(3, edges);
-        FloydWarshall fw = new FloydWarshall(graph, 0, initCostMatrix(3), initParentMatrix(3));
+        FloydWarshall fw = new FloydWarshall(graph);
         fw.execute();
 
         assertFalse(fw.isSuccessful());
@@ -145,21 +123,16 @@ public class ShortestPathAlgorithmsTest {
             if (i + 1 < size) graph[i].add(new int[]{i + 1, 1});
         }
 
-        int[] cost = new int[size];
-        int[] parent = new int[size];
-        int[][] costMatrix = initCostMatrix(size);
-        int[][] parentMatrix = initParentMatrix(size);
-
         long start = System.nanoTime();
-        new Dijkstra(graph, 0, cost, parent).execute();
+        new Dijkstra(graph, 0).execute();
         long dijkstraTime = System.nanoTime() - start;
 
         start = System.nanoTime();
-        new BellmanFord(graph, 0, cost.clone(), parent.clone()).execute();
+        new BellmanFord(graph, 0).execute();
         long bellmanTime = System.nanoTime() - start;
 
         start = System.nanoTime();
-        new FloydWarshall(graph, 0, costMatrix, parentMatrix).execute();
+        new FloydWarshall(graph).execute();
         long floydTime = System.nanoTime() - start;
 
         System.out.println("Dijkstra: " + dijkstraTime + " ns");
