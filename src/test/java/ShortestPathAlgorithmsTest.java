@@ -30,7 +30,6 @@ public class ShortestPathAlgorithmsTest {
 
     private final int vertices = 4;
 
-
     @Test
     public void testDijkstraCorrectness() {
         ArrayList<int[]>[] graph = createGraph(vertices, smallGraphEdges);

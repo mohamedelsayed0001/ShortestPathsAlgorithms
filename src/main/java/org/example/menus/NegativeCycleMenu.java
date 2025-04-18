@@ -37,6 +37,8 @@ public class NegativeCycleMenu implements Menu{
                 return;
         }
 
+        strategy.execute();
+
         if(strategy.isSuccessful()) {
             System.out.println("The graph does not contain any negative cycles.");
         }

@@ -9,16 +9,14 @@ public class GraphCLI {
     private static ArrayList<int[]>[] graph;
     private static final Scanner scanner = new Scanner(System.in);
     private static int vertices;
+    private static final GraphParser parser = new GraphParser();
 
     public static void main(String[] args) {
         System.out.println("Welcome to the Graph CLI tool");
         System.out.print("Please enter the path to the graph file: ");
         String filePath = scanner.nextLine();
-        GraphParser parser = new GraphParser();
         try {
-//            graph = parser.parseGraph(filePath);
-            graph = parser.parseGraph("src/main/java/org/example/graph.txt");
-            parser.printGraph(graph);
+            graph = parser.parseGraph(filePath);
             vertices = graph.length;
             mainMenu();
         } catch (IOException e) {
@@ -32,7 +30,11 @@ public class GraphCLI {
 
     private static void mainMenu() {
         boolean exit = false;
+
         while (!exit) {
+            separateTermial();
+            parser.printGraph(graph);
+
             System.out.println("\n--- MAIN MENU ---");
             System.out.println("1. Find shortest paths from source node to all other nodes");
             System.out.println("2. Find shortest paths between all pairs of nodes");
@@ -41,6 +43,9 @@ public class GraphCLI {
             System.out.print("Enter your choice: ");
 
             int choice = getIntInput();
+
+            if(choice == -1) continue;
+
             Menu subMenu = null;
 
             switch (choice) {
@@ -61,7 +66,7 @@ public class GraphCLI {
                     System.out.println("Invalid choice. Please try again.");
             }
 
-            assert subMenu != null;
+            if(subMenu == null) continue;
             subMenu.display();
         }
     }
@@ -74,4 +79,11 @@ public class GraphCLI {
             return -1;
         }
     }
+
+    public static void separateTermial() {
+        for (int i = 0; i < 2; i++) {
+            System.out.println();
+        }
+    }
+
 }
