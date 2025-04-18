@@ -17,6 +17,7 @@ public class GraphCLI {
         GraphParser parser = new GraphParser();
         try {
             graph = parser.parseGraph(filePath);
+            parser.printGraph(graph);
             vertices = graph.length;
             mainMenu();
         } catch (IOException e) {
@@ -49,7 +50,7 @@ public class GraphCLI {
                     subMenu = new AllPairsMenu(vertices, graph);
                     break;
                 case 3:
-                    subMenu = new NegativeCycleMenu(vertices, graph);
+                    subMenu = new NegativeCycleMenu(graph);
                     break;
                 case 4:
                     exit = true;

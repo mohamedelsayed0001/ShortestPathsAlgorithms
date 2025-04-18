@@ -4,102 +4,102 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class Dijkstra implements Algorithim {
+public class Dijkstra implements Algorithm {
 
-    private int source;
-    private ArrayList<int[]>[] graph;
+    private final int source;
+    private final ArrayList<int[]>[] graph;
     private final int vertices;
-    private int[] costs;
-    private int[] parents;
+    private final int[][] costs;
+    private final int[][] parents;
+    private boolean success = true;
 
-    public Dijkstra(ArrayList<int[]>[] graph, int source, int[] costs, int[] parents) {
+    public Dijkstra(ArrayList<int[]>[] graph, int source) {
         this.source = source;
         this.graph = graph;
         this.vertices = graph.length;
-        this.costs = costs;
-        this.parents = parents;
+
+        if (source == -1) {
+            costs = new int[vertices][vertices];
+            parents = new int[vertices][vertices];
+        } else {
+            costs = new int[1][vertices];
+            parents = new int[1][vertices];
+        }
     }
 
+    @Override
     public void execute() {
-
+        // Check for negative weights
         for (int i = 0; i < vertices; i++) {
             for (int[] edge : graph[i]) {
                 if (edge[1] < 0) {
                     System.out.println("Warning: Dijkstra's algorithm does not support negative weights!");
+                    success = false;
                     return;
                 }
             }
         }
 
-        Arrays.fill(costs, Integer.MAX_VALUE);
-        costs[source] = 0;
+        if (source == -1) {
+            for (int i = 0; i < vertices; i++) {
+                runDijkstra(i, costs[i], parents[i]);
+            }
+        } else {
+            runDijkstra(source, costs[0], parents[0]);
+        }
+    }
 
-        Arrays.fill(parents, -1);
+    private void runDijkstra(int src, int[] cost, int[] parent) {
+        Arrays.fill(cost, Integer.MAX_VALUE);
+        Arrays.fill(parent, -1);
+        cost[src] = 0;
 
         boolean[] visited = new boolean[vertices];
 
         for (int i = 0; i < vertices; i++) {
             int u = -1;
             for (int j = 0; j < vertices; j++) {
-                if (!visited[j] && (u == -1 || costs[j] < costs[u])) {
+                if (!visited[j] && (u == -1 || cost[j] < cost[u])) {
                     u = j;
                 }
             }
 
-            if (u == -1 || costs[u] == Integer.MAX_VALUE) {
-                break;
-            }
+            if (u == -1 || cost[u] == Integer.MAX_VALUE) break;
 
             visited[u] = true;
 
             for (int[] edge : graph[u]) {
-                int v = edge[0];
-                int weight = edge[1];
-
-                if (!visited[v] && costs[u] != Integer.MAX_VALUE &&
-                        costs[u] + weight < costs[v]) {
-                    costs[v] = costs[u] + weight;
-                    parents[v] = u;
+                int v = edge[0], weight = edge[1];
+                if (!visited[v] && cost[u] + weight < cost[v]) {
+                    cost[v] = cost[u] + weight;
+                    parent[v] = u;
                 }
             }
         }
-
     }
 
-    public String getCost(int destination) {
-        if (costs[destination] == Integer.MAX_VALUE) {
-            return "destination is unreachable";
-        }
-        return String.valueOf(costs[destination]);
+    public String getCost(int from, int to) {
+        int cost = (source == -1) ? costs[from][to] : costs[0][to];
+        return (cost == Integer.MAX_VALUE) ? "∞" : String.valueOf(cost);
     }
 
-    public String getPath(int destination) {
-        if (destination == source) {
-            return Integer.toString(source);
-        }
+    public String getPath(int from, int to) {
+        int[] parent = (source == -1) ? parents[from] : parents[0];
+        int[] cost = (source == -1) ? costs[from] : costs[0];
 
-        if (parents[destination] == -1 || costs[destination] == Integer.MAX_VALUE) {
-            return "No path exists";
-        }
+        if (cost[to] == Integer.MAX_VALUE) return "No path exists";
 
         ArrayList<Integer> path = new ArrayList<>();
-        int current = destination;
-
-        while (current != -1) {
-            path.add(current);
-            current = parents[current];
+        for (int v = to; v != -1; v = parent[v]) {
+            path.add(v);
         }
 
         Collections.reverse(path);
+        return path.toString();
+    }
 
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < path.size(); i++) {
-            result.append(path.get(i));
-            if (i < path.size() - 1) {
-                result.append(" -> ");
-            }
-        }
-
-        return result.toString();
+    @Override
+    public boolean isSuccessful() {
+        return success;
     }
 }

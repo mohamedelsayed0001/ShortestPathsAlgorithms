@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class GraphParser {
 
@@ -37,7 +36,6 @@ public class GraphParser {
         return graph;
     }
 
-    // chatgpt elmtrshm
     public void printGraph(ArrayList<int[]>[] graph) {
         System.out.println("Graph");
         for (int i = 0; i < graph.length; i++) {

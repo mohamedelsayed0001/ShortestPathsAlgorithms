@@ -1,5 +1,10 @@
 package org.example.menus;
 
+import org.example.algorithims.Algorithm;
+import org.example.algorithims.BellmanFord;
+import org.example.algorithims.Dijkstra;
+import org.example.algorithims.FloydWarshall;
+
 import java.util.ArrayList;
 
 import static org.example.GraphCLI.getIntInput;
@@ -22,29 +27,31 @@ public class AllPairsMenu implements Menu {
         System.out.println("3. Floyd-Warshall Algorithm");
         System.out.print("Enter your choice: ");
 
+        Algorithm strategy;
         int choice = getIntInput();
-
 
         switch (choice) {
             case 1:
-//                success = Dijkstra(source);
+                strategy = new Dijkstra(graph, -1);
                 break;
             case 2:
-//                success = BellmanFord(source);
-                break;
+                strategy = new BellmanFord(graph, -1);
+               break;
             case 3:
-//                success = FloydWarshall(source);
+                strategy = new FloydWarshall(graph);
                 break;
             default:
                 System.out.println("Invalid choice. Returning to main menu.");
                 return;
         }
 
-//        if (!success) {
-//            System.out.println("Algorithm reported a negative cycle. Results may not be valid.");
-//        }
-
         boolean backToMain = false;
+
+        strategy.execute();
+        if(!strategy.isSuccessful()) {
+            backToMain = true;
+        }
+
         while (!backToMain) {
             System.out.println("\n--- All Pairs Shortest Path Results ---");
             System.out.println("1. Get cost of path between two nodes");
@@ -58,31 +65,20 @@ public class AllPairsMenu implements Menu {
 
             switch (subChoice) {
                 case 1:
-                    System.out.print("Enter source node: ");
-                    src = getIntInput();
-                    System.out.print("Enter destination node: ");
-                    dest = getIntInput();
+                    System.out.print("Enter source node: "); src = getIntInput();
+                    System.out.print("Enter destination node: "); dest = getIntInput();
 
                     if (src >= 0 && src < vertices && dest >= 0 && dest < vertices) {
-                        System.out.println("Cost of path from " + src + " to " + dest + ": ");
-                        // get path cost
-                    } else {
-                        System.out.println("Invalid source or destination node.");
-                    }
+                        System.out.println("Path cost from " + src + " to " + dest + ": " + strategy.getCost(src, dest));
+                    } else System.out.println("Invalid source or destination node.");
                     break;
                 case 2:
-                    System.out.print("Enter source node: ");
-                    src = getIntInput();
-                    System.out.print("Enter destination node: ");
-                    dest = getIntInput();
+                    System.out.print("Enter source node: "); src = getIntInput();
+                    System.out.print("Enter destination node: "); dest = getIntInput();
 
                     if (src >= 0 && src < vertices && dest >= 0 && dest < vertices) {
-                        System.out.println("Cost of path from " + src + " to " + dest + ": ");
-                        // get path
-                    } else {
-                        System.out.println("Invalid source or destination node.");
-                    }
-
+                        System.out.println("Path from " + src + " to " + dest + ": " + strategy.getPath(src, dest));
+                    } else System.out.println("Invalid source or destination node.");
                     break;
                 case 3:
                     backToMain = true;

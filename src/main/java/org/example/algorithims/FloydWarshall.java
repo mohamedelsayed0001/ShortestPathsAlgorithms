@@ -2,21 +2,19 @@ package org.example.algorithims;
 
 import java.util.*;
 
-public class FloydWarshall implements Algorithim {
+public class FloydWarshall implements Algorithm {
     private final int vertices;
     private final int[][] cost;
     private final int[][] parent;
     private final ArrayList<int[]>[] graph;
-    private final int source; 
 
     private boolean hasNegativeCycle = false; 
 
-    public FloydWarshall(ArrayList<int[]>[] graph, int source, int[][] cost, int[][] parent) {
+    public FloydWarshall(ArrayList<int[]>[] graph) {
         this.graph = graph;
         this.vertices = graph.length;
-        this.source = source;
-        this.cost = cost;
-        this.parent = parent;
+        this.cost = new int[vertices][vertices];
+        this.parent = new int[vertices][vertices];
     }
 
     @Override
@@ -53,6 +51,7 @@ public class FloydWarshall implements Algorithim {
 
         for (int i = 0; i < vertices; i++) {
             if (cost[i][i] < 0) {
+                System.out.println("The graph contains at least one negative cycle.");
                 hasNegativeCycle = true;
                 break;
             }
@@ -60,13 +59,13 @@ public class FloydWarshall implements Algorithim {
     }
 
     @Override
-    public String getCost(int destination) {
+    public String getCost(int source, int destination) {
         int c = cost[source][destination];
         return c == Integer.MAX_VALUE ? "∞" : String.valueOf(c);
     }
 
     @Override
-    public String getPath(int destination) {
+    public String getPath(int source, int destination) {
         if (cost[source][destination] == Integer.MAX_VALUE) return "No path";
 
         List<Integer> path = new ArrayList<>();

@@ -20,7 +20,6 @@ public class SingleSourceMenu implements Menu {
     public void display() {
         System.out.print("Enter the source node: ");
         int source = getIntInput();
-        Algorithim strategy = null;
 
         if (source < 0 || source >= vertices) {
             System.out.println("Invalid source node. Returning to main menu.");
@@ -33,30 +32,31 @@ public class SingleSourceMenu implements Menu {
         System.out.println("3. Floyd-Warshall Algorithm");
         System.out.print("Enter your choice: ");
 
+        Algorithm strategy;
         int choice = getIntInput();
-
-        int[] costs = new int[vertices];
-        int[] parents = new int[vertices];
 
         switch (choice) {
             case 1:
-                strategy = new Dijkstra(graph, source, costs, parents);
+                strategy = new Dijkstra(graph, source);
                 break;
             case 2:
-//                BellmanFord(source);
+                strategy = new BellmanFord(graph, source);
                 break;
             case 3:
-//                FloydWarshall(source);
+                strategy = new FloydWarshall(graph);
                 break;
             default:
                 System.out.println("Invalid choice. Returning to main menu.");
                 return;
         }
 
-        assert strategy != null;
-        strategy.execute();
-
         boolean backToMain = false;
+
+        strategy.execute();
+        if(!strategy.isSuccessful()) {
+            backToMain = true;
+        }
+
         while (!backToMain) {
             System.out.println("\n--- Single Source Shortest Path Results ---");
             System.out.println("1. Get cost of path to a specific node");
@@ -71,7 +71,7 @@ public class SingleSourceMenu implements Menu {
                     System.out.print("Enter destination node: ");
                     dest = getIntInput();
                     if (dest >= 0 && dest < vertices) {
-                        System.out.print("Path from " + source + " to " + dest + ": " + strategy.getCost(dest));
+                        System.out.print("Path cost from " + source + " to " + dest + ": " + strategy.getCost(source, dest));
                     } else System.out.println("Invalid destination node.");
 
                     break;
@@ -79,7 +79,7 @@ public class SingleSourceMenu implements Menu {
                     System.out.print("Enter destination node: ");
                     dest = getIntInput();
                     if (dest >= 0 && dest < vertices) {
-                        System.out.print("Path from " + source + " to " + dest + ": " + strategy.getPath(dest));
+                        System.out.print("Path from " + source + " to " + dest + ": " + strategy.getPath(source, dest));
                     } else System.out.println("Invalid destination node.");
 
                     break;

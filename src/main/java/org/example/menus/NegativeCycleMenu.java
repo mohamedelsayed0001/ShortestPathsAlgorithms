@@ -1,16 +1,18 @@
 package org.example.menus;
 
+import org.example.algorithims.Algorithm;
+import org.example.algorithims.BellmanFord;
+import org.example.algorithims.FloydWarshall;
+
 import java.util.ArrayList;
 
 import static org.example.GraphCLI.getIntInput;
 
 public class NegativeCycleMenu implements Menu{
 
-    private final int vertices;
     private final ArrayList<int[]>[] graph;
 
-    public NegativeCycleMenu (int vertices, ArrayList<int[]>[] graph) {
-        this.vertices = vertices;
+    public NegativeCycleMenu (ArrayList<int[]>[] graph) {
         this.graph = graph;
     }
 
@@ -21,23 +23,21 @@ public class NegativeCycleMenu implements Menu{
         System.out.print("Enter your choice: ");
 
         int choice = getIntInput();
-        boolean hasNegativeCycle = false;
+        Algorithm strategy;
 
         switch (choice) {
             case 1:
-//                hasNegativeCycle = checkNegativeCycleBellmanFord();
+                strategy = new BellmanFord(graph, 0);
                 break;
             case 2:
-//                hasNegativeCycle = checkNegativeCycleFloydWarshall();
+                strategy = new FloydWarshall(graph);
                 break;
             default:
                 System.out.println("Invalid choice. Returning to main menu.");
                 return;
         }
 
-        if (hasNegativeCycle) {
-            System.out.println("The graph contains at least one negative cycle.");
-        } else {
+        if(strategy.isSuccessful()) {
             System.out.println("The graph does not contain any negative cycles.");
         }
     }
